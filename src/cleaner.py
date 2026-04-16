@@ -62,7 +62,7 @@ def clean_trades(df):
     
     rows_after = len(df)
     print(f"\nAfter removing outliers: {rows_after} rows")
-    print(f"  ✓ Removed {rows_before - rows_after} rows ({100*(rows_before-rows_after)/rows_before:.1f}%)")
+    print(f"  Removed {rows_before - rows_after} rows ({100*(rows_before-rows_after)/rows_before:.1f}%)")
     print(f"\n  PnL Stats (cleaned):")
     print(f"    Mean: ${df['closed_pnl'].mean():.2f}")
     print(f"    Median: ${df['closed_pnl'].median():.2f}")
@@ -96,7 +96,7 @@ def clean_sentiment(df):
     if 'date' in df.columns:
         df['date'] = pd.to_datetime(df['date'], errors='coerce').dt.date
     else:
-        print("\n✗ Warning: 'date' column not found in sentiment data")
+        print("\n  Warning: 'date' column not found in sentiment data")
     
     # Clean Classification column
     if 'classification' in df.columns:
@@ -157,7 +157,7 @@ def merge_datasets(trades, sentiment):
     print(f"\nMerge Results:")
     print(f"  Total trades: {len(merged)}")
     print(f"  Trades with sentiment label: {trades_with_sentiment}")
-    print(f"  ✓ Merge success rate: {merge_rate:.1f}%")
+    print(f"  Merge success rate: {merge_rate:.1f}%")
     
     if merged['classification'].isna().sum() > 0:
         print(f"  ⚠ Unmatched trades (no sentiment): {merged['classification'].isna().sum()}")

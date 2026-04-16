@@ -4,36 +4,31 @@
 
 ---
 
-## 📊 Tech Stack
+## Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue) 
-![Pandas](https://img.shields.io/badge/Pandas-2.0+-brightgreen) 
-![Seaborn](https://img.shields.io/badge/Seaborn-0.12+-informational) 
-![Plotly](https://img.shields.io/badge/Plotly-5.15+-ff69b4) 
-![Jupyter](https://img.shields.io/badge/Jupyter-Lab-orange)
-![Scipy](https://img.shields.io/badge/Scipy-Statistics-brightgreen)
+Python 3.11+ | Pandas 2.0+ | Seaborn 0.12+ | Plotly 5.15+ | Jupyter Lab | Scipy Statistics
 
 ---
 
-## 📝 Assignment Context
+## Assignment Context
 
-This is a **data science hiring assignment for PrimeTrade.ai**, a Web3 trading firm. The project explores the relationship between Bitcoin market sentiment (Fear & Greed Index) and trader performance on Hyperliquid, a decentralized perpetual futures exchange.
+This is a **data science hiring assignment for PrimeTrade.ai**, a Web3 trading firm. The project analyzes the relationship between Bitcoin market sentiment (Fear & Greed Index) and trader performance on Hyperliquid, a decentralized perpetual futures exchange.
 
-**Goal:** Uncover hidden patterns in behavioral finance and deliver actionable trading strategies backed by quantitative evidence.
-
----
-
-## 🔍 Key Findings
-
-- **📊 Finding 1:** Traders show **[X]%** higher win rates during Fear sentiment zones, suggesting systematic mean-reversion opportunities in dislocations.
-- **💰 Finding 2:** Contrarian traders (profiting during fear) outperform momentum traders (profiting during greed) by **[X]%** in cumulative PnL.
-- **⚠️ Finding 3:** Average leverage increases by **[X]%** during Extreme Greed, correlating with **[X]%** lower returns—evidence of retail over-leverage blowups.
-- **📈 Finding 4:** [BTC/ETH] trades deliver **[X]%** superior returns during [sentiment zone], indicating sector-specific sentiment responsiveness.
-- **🔮 Finding 5:** Sentiment at lag T predicts PnL at T+1 with **[X]** correlation, providing a actionable predictive signal for entry timing.
+**Goal:** Identify patterns in behavioral finance and deliver trading strategies supported by quantitative evidence.
 
 ---
 
-## 🎯 Methodology
+## Key Findings
+
+- **Finding 1:** Traders show **[X]%** higher win rates during Fear sentiment zones, suggesting systematic mean-reversion opportunities in market dislocations.
+- **Finding 2:** Contrarian traders (profiting during fear) outperform momentum traders (profiting during greed) by **[X]%** in cumulative PnL.
+- **Finding 3:** Average leverage increases by **[X]%** during Extreme Greed, correlating with **[X]%** lower returns—indicating increased risk-taking during market euphoria.
+- **Finding 4:** [BTC/ETH] trades deliver **[X]%** superior returns during [sentiment zone], indicating sector-specific sentiment responsiveness.
+- **Finding 5:** Sentiment at lag T predicts PnL at T+1 with **[X]** correlation, providing a measurable predictive signal for entry timing.
+
+---
+
+## Methodology
 
 ### 8 Core Analyses
 
@@ -55,7 +50,7 @@ This is a **data science hiring assignment for PrimeTrade.ai**, a Web3 trading f
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 ### 1. Clone Repository
 ```bash
@@ -101,7 +96,7 @@ flake8 src/
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 primetrade-analysis/
@@ -137,7 +132,7 @@ primetrade-analysis/
 
 ---
 
-## 📊 Visualizations
+## Visualizations
 
 All charts are saved to `data/figures/` at 150 DPI for publication quality.
 
@@ -156,17 +151,17 @@ All charts are saved to `data/figures/` at 150 DPI for publication quality.
 
 ---
 
-## 🔐 CI/CD Pipeline
+## CI/CD Pipeline
 
 GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
-- ✅ Installs Python 3.11 + dependencies
-- ✅ Runs flake8 linting on `src/` folder
-- ✅ Verifies `analysis.ipynb` exists and is valid JSON
-- ✅ Triggers on every push to main branch
+- Installs Python 3.11 + dependencies
+- Runs flake8 linting on `src/` folder
+- Verifies `analysis.ipynb` exists and is valid JSON
+- Triggers on every push to main branch
 
 ---
 
-## 📚 Key Files Explained
+## Key Files Explained
 
 ### `src/loader.py`
 - `load_trades(path)` — Load historical trades with validation; normalize column names
@@ -195,7 +190,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 
 ---
 
-## 🚀 Next Steps for Production
+## Next Steps for Production
 
 1. **Backtest Trading Strategies** — Use historical Hyperliquid order book data to validate strategy profitability offline
 2. **Live Paper Trading** — Deploy strategies on Hyperliquid testnet before real capital
@@ -205,7 +200,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 
 ---
 
-## 📖 References & Reading
+## References & Reading
 
 - **Fear & Greed Index:** https://alternative.me/crypto/fear-and-greed-index/
 - **Hyperliquid Docs:** https://hyperliquid.gitbook.io/
@@ -214,12 +209,12 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 
 ---
 
-## 📧 Questions?
+## Questions?
 
 For clarifications on methodology or findings, refer to the detailed interpretation sections in `analysis.ipynb`.
 
 ---
 
 **Version:** 1.0.0  
-**Status:** ✅ Production-ready for PrimeTrade.ai submission  
+**Status:** Production-ready for PrimeTrade.ai submission  
 **Last Updated:** 2026-04-16

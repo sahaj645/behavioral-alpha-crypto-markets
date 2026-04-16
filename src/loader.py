@@ -29,8 +29,8 @@ def load_trades(path):
         # Normalize column names
         df.columns = df.columns.str.lower().str.strip().str.replace(' ', '_')
         
-        print(f"\n✓ Loaded trades data from {path}")
-        print(f"  Shape: {df.shape[0]} rows × {df.shape[1]} columns")
+        print(f"\nLoaded trades data from {path}")
+        print(f"  Shape: {df.shape[0]} rows x {df.shape[1]} columns")
         print(f"  Columns: {list(df.columns)}")
         print(f"\n  Data types:")
         print(df.dtypes)
@@ -40,10 +40,10 @@ def load_trades(path):
         return df
     
     except FileNotFoundError as e:
-        print(f"✗ ERROR: Could not find trades file at {path}")
+        print(f"Error: Could not find trades file at {path}")
         sys.exit(1)
     except Exception as e:
-        print(f"✗ ERROR loading trades: {str(e)}")
+        print(f"Error loading trades: {str(e)}")
         sys.exit(1)
 
 
@@ -69,8 +69,8 @@ def load_sentiment(path):
         # Normalize column names
         df.columns = df.columns.str.lower().str.strip().str.replace(' ', '_')
         
-        print(f"\n✓ Loaded sentiment data from {path}")
-        print(f"  Shape: {df.shape[0]} rows × {df.shape[1]} columns")
+        print(f"\nLoaded sentiment data from {path}")
+        print(f"  Shape: {df.shape[0]} rows x {df.shape[1]} columns")
         print(f"  Columns: {list(df.columns)}")
         print(f"\n  Data types:")
         print(df.dtypes)
@@ -80,10 +80,10 @@ def load_sentiment(path):
         return df
     
     except FileNotFoundError as e:
-        print(f"✗ ERROR: Could not find sentiment file at {path}")
+        print(f"Error: Could not find sentiment file at {path}")
         sys.exit(1)
     except Exception as e:
-        print(f"✗ ERROR loading sentiment: {str(e)}")
+        print(f"Error loading sentiment: {str(e)}")
         sys.exit(1)
 
 

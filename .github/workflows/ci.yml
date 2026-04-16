@@ -43,7 +43,7 @@ jobs:
           echo "ERROR: analysis.ipynb not found"
           exit 1
         fi
-        python -m json.tool analysis.ipynb > /dev/null && echo "✓ Notebook JSON valid"
+        python -m json.tool analysis.ipynb > /dev/null && echo "Notebook JSON valid"
 
     - name: Verify data directory structure
       run: |
@@ -55,7 +55,7 @@ jobs:
           echo "ERROR: data/figures directory not found"
           exit 1
         fi
-        echo "✓ Data directories valid"
+        echo "Data directories valid"
 
     - name: Check src module structure
       run: |
@@ -70,12 +70,12 @@ jobs:
             exit 1
           fi
         done
-        echo "✓ All required source files present"
+        echo "All required source files present"
 
     - name: Test imports
       run: |
-        python -c "from src import loader, cleaner, analysis, visualizer; print('✓ All modules import successfully')"
+        python -c "from src import loader, cleaner, analysis, visualizer; print('All modules import successfully')"
 
     - name: Summary
       run: |
-        echo "✓ Pipeline complete: Linting passed, notebook valid, project structure verified"
+        echo "Pipeline complete: Linting passed, notebook valid, project structure verified"

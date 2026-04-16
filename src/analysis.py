@@ -43,7 +43,7 @@ def pnl_by_sentiment(df):
     print("\nPnL Statistics by Sentiment Zone:")
     print(result)
     
-    print("\n✓ Key Insights:")
+    print("\nKey Insights:")
     best_sentiment = result['mean'].idxmax()
     worst_sentiment = result['mean'].idxmin()
     print(f"  - Best avg PnL: {best_sentiment} (${result.loc[best_sentiment, 'mean']:.2f})")
@@ -147,7 +147,7 @@ def long_short_sentiment_analysis(df):
     print("\nTrade counts by Sentiment and Side:")
     print(pivot_counts)
     
-    print("\n✓ Key Insights:")
+    print("\nKey Insights:")
     if 'Long' in pivot.columns:
         best_long_sentiment = pivot['Long'].idxmax()
         print(f"  - Best sentiment for LONG positions: {best_long_sentiment} (${pivot.loc[best_long_sentiment, 'Long']:.2f})")
@@ -257,7 +257,7 @@ def leverage_sentiment_analysis(df):
     
     # Correlation: leverage vs PnL
     correlation = df_analysis[['leverage', 'closed_pnl']].corr().iloc[0, 1]
-    print(f"\n✓ Leverage-PnL Correlation: {correlation:.3f}")
+    print(f"\nLeverage-PnL Correlation: {correlation:.3f}")
     
     # Do traders use more leverage during greed?
     greed_leverage = df_analysis[df_analysis['classification'].isin(['Greed', 'Extreme Greed'])]['leverage'].mean()
@@ -267,7 +267,7 @@ def leverage_sentiment_analysis(df):
     print(f"  - Avg leverage in Greed zones: {greed_leverage:.2f}x")
     print(f"  - Avg leverage in Fear zones: {fear_leverage:.2f}x")
     if greed_leverage > fear_leverage:
-        print(f"  - ✓ Traders DO use MORE leverage during greed (+{(greed_leverage/fear_leverage - 1)*100:.1f}%)")
+        print(f"  - Traders DO use MORE leverage during greed (+{(greed_leverage/fear_leverage - 1)*100:.1f}%)")
     else:
         print(f"  - Traders use LESS leverage during greed ({(1 - greed_leverage/fear_leverage)*100:.1f}% lower)")
     
@@ -378,17 +378,17 @@ def contrarian_vs_momentum_analysis(df):
     contrarian_total = classifier[classifier['type'] == 'Contrarian']['total_pnl'].sum()
     momentum_total = classifier[classifier['type'] == 'Momentum']['total_pnl'].sum()
     
-    print(f"\n✓ Trader Type Distribution:")
+    print(f"\nTrader Type Distribution:")
     print(f"  - Contrarian traders: {contrarian_traders}")
     print(f"  - Momentum traders: {momentum_traders}")
-    print(f"\n✓ Total PnL by Type:")
+    print(f"\nTotal PnL by Type:")
     print(f"  - Contrarian total PnL: ${contrarian_total:,.2f}")
     print(f"  - Momentum total PnL: ${momentum_total:,.2f}")
     
     if contrarian_total > momentum_total:
-        print(f"\n  ✓ CONTRARIAN traders have {(contrarian_total/momentum_total - 1)*100:.1f}% higher total PnL")
+        print(f"\n  CONTRARIAN traders have {(contrarian_total/momentum_total - 1)*100:.1f}% higher total PnL")
     else:
-        print(f"\n  ✓ MOMENTUM traders have {(momentum_total/contrarian_total - 1)*100:.1f}% higher total PnL")
+        print(f"\n  MOMENTUM traders have {(momentum_total/contrarian_total - 1)*100:.1f}% higher total PnL")
     
     return classifier
 
@@ -463,7 +463,7 @@ def lag_effect_analysis(df):
     print(lag_df.round(3))
     
     best_lag = lag_df.loc[lag_df['correlation'].abs().idxmax()]
-    print(f"\n✓ Key Insights:")
+    print(f"\nKey Insights:")
     print(f"  - Strongest signal: Lag {int(best_lag['lag'])} days (corr: {best_lag['correlation']:.3f})")
     
     if best_lag['lag'] > 0:
