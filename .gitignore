@@ -71,3 +71,6 @@ Thumbs.db
 .pytest_cache/
 data/raw/*.csv
 !data/raw/.gitkeep
+data/figures/*.png
+!data/figures/.gitkeep
+analysis.executed.ipynb

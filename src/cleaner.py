@@ -7,6 +7,37 @@ import pandas as pd
 import numpy as np
 
 
+def _derive_trade_time(df):
+    """Return the best available trade timestamp column as pandas datetime."""
+    if 'time' in df.columns:
+        return pd.to_datetime(df['time'], errors='coerce')
+
+    if 'timestamp_ist' in df.columns:
+        return pd.to_datetime(df['timestamp_ist'], format='%d-%m-%Y %H:%M', errors='coerce')
+
+    if 'timestamp' in df.columns:
+        timestamp_numeric = pd.to_numeric(df['timestamp'], errors='coerce')
+        return pd.to_datetime(timestamp_numeric, unit='ms', errors='coerce')
+
+    return pd.Series(pd.NaT, index=df.index)
+
+
+def _derive_position_side(df):
+    """Map trade direction to Long/Short when the source data provides it."""
+    if 'direction' not in df.columns:
+        if 'side' in df.columns:
+            normalized_side = df['side'].astype('string').str.title()
+            return normalized_side.where(normalized_side.isin(['Long', 'Short']))
+        return None
+
+    direction = df['direction'].astype('string')
+    side = pd.Series(pd.NA, index=df.index, dtype='string')
+    side.loc[direction.str.contains('long', case=False, na=False)] = 'Long'
+    side.loc[direction.str.contains('short', case=False, na=False)] = 'Short'
+
+    return side
+
+
 def clean_trades(df):
     """
     Clean historical trades dataset.
@@ -30,12 +61,28 @@ def clean_trades(df):
     df = df.copy()
     rows_before = len(df)
     
+    # Normalize column aliases used by the bundled dataset
+    if 'coin' in df.columns and 'symbol' not in df.columns:
+        df['symbol'] = df['coin']
+
     # Parse time to datetime and extract date
-    df['time'] = pd.to_datetime(df['time'], errors='coerce')
+    df['time'] = _derive_trade_time(df)
     df['date'] = df['time'].dt.date
-    
+
+    if 'side' in df.columns or 'direction' in df.columns:
+        df['side'] = _derive_position_side(df)
+
     # Cast numeric columns
-    numeric_cols = ['closed_pnl', 'size', 'leverage', 'execution_price']
+    numeric_cols = [
+        'closed_pnl',
+        'size',
+        'size_tokens',
+        'size_usd',
+        'leverage',
+        'execution_price',
+        'fee',
+        'start_position',
+    ]
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -59,7 +106,7 @@ def clean_trades(df):
     print(f"  Outliers detected (IQR method): {rows_with_outliers}")
     
     df = df[(df['closed_pnl'] >= lower_bound) & (df['closed_pnl'] <= upper_bound)]
-    
+
     rows_after = len(df)
     print(f"\nAfter removing outliers: {rows_after} rows")
     print(f"  Removed {rows_before - rows_after} rows ({100*(rows_before-rows_after)/rows_before:.1f}%)")
@@ -67,7 +114,8 @@ def clean_trades(df):
     print(f"    Mean: ${df['closed_pnl'].mean():.2f}")
     print(f"    Median: ${df['closed_pnl'].median():.2f}")
     print(f"    Std: ${df['closed_pnl'].std():.2f}")
-    
+    print(f"    Null timestamps after parsing: {df['time'].isna().sum()}")
+
     return df.reset_index(drop=True)
 
 
@@ -160,6 +208,6 @@ def merge_datasets(trades, sentiment):
     print(f"  Merge success rate: {merge_rate:.1f}%")
     
     if merged['classification'].isna().sum() > 0:
-        print(f"  ⚠ Unmatched trades (no sentiment): {merged['classification'].isna().sum()}")
+        print(f"  Warning: unmatched trades (no sentiment): {merged['classification'].isna().sum()}")
     
     return merged

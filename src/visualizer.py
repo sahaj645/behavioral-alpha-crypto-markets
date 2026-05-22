@@ -29,7 +29,7 @@ def bar_pnl_by_sentiment(df):
     Args:
         df (pd.DataFrame): Analysis result from pnl_by_sentiment()
     """
-    print("\n📊 Generating Chart 1: PnL by Sentiment...")
+    print("\nGenerating Chart 1: PnL by Sentiment...")
     
     fig, ax = plt.subplots(figsize=(12, 6))
     
@@ -53,7 +53,7 @@ def bar_pnl_by_sentiment(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'bar_pnl_by_sentiment.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -65,7 +65,7 @@ def winrate_by_sentiment(df):
     Args:
         df (pd.DataFrame): Analysis result from win_rate_by_sentiment()
     """
-    print("\n📊 Generating Chart 2: Win Rate by Sentiment...")
+    print("\nGenerating Chart 2: Win Rate by Sentiment...")
     
     df_sorted = df.sort_values('win_rate', ascending=True)
     
@@ -91,7 +91,7 @@ def winrate_by_sentiment(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'winrate_by_sentiment.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -102,10 +102,10 @@ def long_short_heatmap(df):
     Args:
         df (pd.DataFrame): Pivot table from long_short_sentiment_analysis()
     """
-    print("\n📊 Generating Chart 3: Long vs Short Heatmap...")
+    print("\nGenerating Chart 3: Long vs Short Heatmap...")
     
     if df is None:
-        print("  ⚠ Skipped (no data)")
+        print("  Skipped (no data)")
         return
     
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -120,7 +120,7 @@ def long_short_heatmap(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'long_short_heatmap.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -131,10 +131,10 @@ def top_traders_heatmap(df):
     Args:
         df (pd.DataFrame): Heatmap data from top_trader_analysis()
     """
-    print("\n📊 Generating Chart 4: Top Traders Heatmap...")
+    print("\nGenerating Chart 4: Top Traders Heatmap...")
     
     if df is None:
-        print("  ⚠ Skipped (no data)")
+        print("  Skipped (no data)")
         return
     
     fig, ax = plt.subplots(figsize=(14, 8))
@@ -149,7 +149,7 @@ def top_traders_heatmap(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'top_traders_heatmap.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -161,10 +161,10 @@ def leverage_vs_sentiment(df):
     Args:
         df (pd.DataFrame): Raw merged dataframe
     """
-    print("\n📊 Generating Chart 5: Leverage vs Sentiment...")
+    print("\nGenerating Chart 5: Leverage vs Sentiment...")
     
     if 'leverage' not in df.columns or 'classification' not in df.columns:
-        print("  ⚠ Skipped (missing columns)")
+        print("  Skipped (missing columns)")
         return
     
     df_clean = df.dropna(subset=['leverage', 'classification']).copy()
@@ -195,7 +195,7 @@ def leverage_vs_sentiment(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'leverage_vs_sentiment.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -207,10 +207,10 @@ def pnl_distribution_by_sentiment(df):
     Args:
         df (pd.DataFrame): Raw merged dataframe
     """
-    print("\n📊 Generating Chart 6: PnL Distribution by Sentiment...")
+    print("\nGenerating Chart 6: PnL Distribution by Sentiment...")
     
     if 'closed_pnl' not in df.columns or 'classification' not in df.columns:
-        print("  ⚠ Skipped (missing columns)")
+        print("  Skipped (missing columns)")
         return
     
     df_clean = df.dropna(subset=['closed_pnl', 'classification']).copy()
@@ -237,7 +237,7 @@ def pnl_distribution_by_sentiment(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'pnl_distribution_by_sentiment.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -248,10 +248,10 @@ def trade_volume_by_sentiment(df):
     Args:
         df (pd.DataFrame): Raw merged dataframe
     """
-    print("\n📊 Generating Chart 7: Trade Volume by Sentiment...")
+    print("\nGenerating Chart 7: Trade Volume by Sentiment...")
     
     if 'classification' not in df.columns:
-        print("  ⚠ Skipped (missing classification)")
+        print("  Skipped (missing classification)")
         return
     
     sentiment_counts = df['classification'].value_counts()
@@ -279,7 +279,7 @@ def trade_volume_by_sentiment(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'trade_volume_by_sentiment.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -290,10 +290,10 @@ def symbol_performance_heatmap(df):
     Args:
         df (pd.DataFrame): Heatmap data from symbol_sentiment_analysis()
     """
-    print("\n📊 Generating Chart 8: Symbol Performance Heatmap...")
+    print("\nGenerating Chart 8: Symbol Performance Heatmap...")
     
     if df is None:
-        print("  ⚠ Skipped (no data)")
+        print("  Skipped (no data)")
         return
     
     fig, ax = plt.subplots(figsize=(14, 8))
@@ -308,7 +308,7 @@ def symbol_performance_heatmap(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'symbol_performance_heatmap.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -320,10 +320,10 @@ def contrarian_vs_momentum(df):
     Args:
         df (pd.DataFrame): Classification df from contrarian_vs_momentum_analysis()
     """
-    print("\n📊 Generating Chart 9: Contrarian vs Momentum Traders...")
+    print("\nGenerating Chart 9: Contrarian vs Momentum Traders...")
     
     if df is None or 'type' not in df.columns:
-        print("  ⚠ Skipped (no data)")
+        print("  Skipped (no data)")
         return
     
     fig, ax = plt.subplots(figsize=(12, 8))
@@ -349,7 +349,7 @@ def contrarian_vs_momentum(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'contrarian_vs_momentum.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 
@@ -361,10 +361,10 @@ def lag_correlation_chart(df):
     Args:
         df (pd.DataFrame): Lag analysis results
     """
-    print("\n📊 Generating Chart 10: Lag Effect Analysis...")
+    print("\nGenerating Chart 10: Lag Effect Analysis...")
     
     if df is None:
-        print("  ⚠ Skipped (no data)")
+        print("  Skipped (no data)")
         return
     
     fig, ax = plt.subplots(figsize=(12, 7))
@@ -393,7 +393,7 @@ def lag_correlation_chart(df):
     plt.tight_layout()
     filepath = FIGURES_DIR / 'lag_correlation_chart.png'
     plt.savefig(filepath, dpi=150, bbox_inches='tight')
-    print(f"  ✓ Saved: {filepath}")
+    print(f"  Saved: {filepath}")
     plt.close()
 
 

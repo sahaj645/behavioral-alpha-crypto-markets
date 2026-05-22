@@ -97,7 +97,7 @@ def win_rate_by_sentiment(df):
         side_analysis['win_rate'] = (100 * side_analysis['wins'] / side_analysis['total_trades']).round(2)
         print(side_analysis)
     
-    print("\n✓ Key Insights:")
+    print("\nKey Insights:")
     print(f"  - Overall win rate: {(df_analysis['is_win'].sum() / len(df_analysis) * 100):.1f}%")
     best_wr = win_rates['win_rate'].idxmax()
     print(f"  - Best win rate: {best_wr} ({win_rates.loc[best_wr, 'win_rate']:.1f}%)")
@@ -121,7 +121,7 @@ def long_short_sentiment_analysis(df):
     print("="*70)
     
     if 'side' not in df.columns:
-        print("⚠ 'side' column not found. Skipping analysis.")
+        print("Warning: 'side' column not found. Skipping analysis.")
         return None
     
     df_analysis = df.dropna(subset=['classification']).copy()
@@ -175,18 +175,25 @@ def top_trader_analysis(df):
     print("="*70)
     
     if 'account' not in df.columns:
-        print("⚠ 'account' column not found. Skipping analysis.")
+        print("Warning: 'account' column not found. Skipping analysis.")
         return None, None
     
     df_analysis = df.copy()
     
     # Top 10 traders by total PnL
-    trader_stats = df_analysis.groupby('account').agg({
+    agg_spec = {
         'closed_pnl': ['sum', 'count', 'mean', 'std'],
-        'leverage': 'mean',
-    }).round(2)
-    
-    trader_stats.columns = ['total_pnl', 'num_trades', 'avg_pnl', 'pnl_std', 'avg_leverage']
+    }
+    if 'leverage' in df_analysis.columns:
+        agg_spec['leverage'] = 'mean'
+
+    trader_stats = df_analysis.groupby('account').agg(agg_spec).round(2)
+
+    if 'leverage' in df_analysis.columns:
+        trader_stats.columns = ['total_pnl', 'num_trades', 'avg_pnl', 'pnl_std', 'avg_leverage']
+    else:
+        trader_stats.columns = ['total_pnl', 'num_trades', 'avg_pnl', 'pnl_std']
+        trader_stats['avg_leverage'] = np.nan
     trader_stats['win_rate'] = (df_analysis.groupby('account')['closed_pnl'].apply(lambda x: (x > 0).sum() / len(x))).round(3)
     trader_stats = trader_stats.sort_values('total_pnl', ascending=False).head(10)
     
@@ -211,7 +218,7 @@ def top_trader_analysis(df):
     else:
         heatmap_data = None
     
-    print("\n✓ Key Insights:")
+    print("\nKey Insights:")
     top_trader = trader_stats.index[0]
     print(f"  - Top trader: {top_trader}")
     print(f"    Total PnL: ${trader_stats.loc[top_trader, 'total_pnl']:,.2f}")
@@ -239,7 +246,7 @@ def leverage_sentiment_analysis(df):
     print("="*70)
     
     if 'leverage' not in df.columns:
-        print("⚠ 'leverage' column not found. Skipping analysis.")
+        print("Warning: 'leverage' column not found. Skipping analysis.")
         return None
     
     df_analysis = df.dropna(subset=['classification']).copy()
@@ -290,7 +297,7 @@ def symbol_sentiment_analysis(df):
     print("="*70)
     
     if 'symbol' not in df.columns:
-        print("⚠ 'symbol' column not found. Skipping analysis.")
+        print("Warning: 'symbol' column not found. Skipping analysis.")
         return None
     
     df_analysis = df.dropna(subset=['classification']).copy()
@@ -317,7 +324,7 @@ def symbol_sentiment_analysis(df):
             print(f"\n{sentiment}:")
             print(sentiment_data.round(2))
     
-    print("\n✓ Key Insights:")
+    print("\nKey Insights:")
     print(f"  - Analyzed {len(top_symbols)} top trading pairs across sentiment zones")
     
     return heatmap_data
@@ -342,7 +349,7 @@ def contrarian_vs_momentum_analysis(df):
     print("="*70)
     
     if 'account' not in df.columns or 'classification' not in df.columns:
-        print("⚠ Required columns not found. Skipping analysis.")
+        print("Warning: required columns not found. Skipping analysis.")
         return None
     
     df_analysis = df.dropna(subset=['classification']).copy()
@@ -412,7 +419,7 @@ def lag_effect_analysis(df):
     print("="*70)
     
     if 'classification' not in df.columns or 'date' not in df.columns:
-        print("⚠ Required columns not found. Skipping analysis.")
+        print("Warning: required columns not found. Skipping analysis.")
         return None
     
     df_analysis = df.dropna(subset=['classification']).copy()
@@ -426,7 +433,7 @@ def lag_effect_analysis(df):
         'Greed': 4,
         'Extreme Greed': 5
     }
-    df_analysis['sentiment_score'] = df_analysis['classification'].map(sentiment_map)
+    df_analysis['sentiment_score'] = df_analysis['classification'].astype('string').map(sentiment_map)
     
     # Daily aggregation: avg sentiment score and PnL per date
     daily = df_analysis.groupby('date').agg({
@@ -459,7 +466,7 @@ def lag_effect_analysis(df):
     
     lag_df = pd.DataFrame(list(lag_results.items()), columns=['lag', 'correlation']).sort_values('lag')
     
-    print("\nLag Effect Analysis (Sentiment → Future PnL):")
+    print("\nLag Effect Analysis (Sentiment -> Future PnL):")
     print(lag_df.round(3))
     
     best_lag = lag_df.loc[lag_df['correlation'].abs().idxmax()]
