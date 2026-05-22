@@ -73,4 +73,6 @@ data/raw/*.csv
 !data/raw/.gitkeep
 data/figures/*.png
 !data/figures/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 analysis.executed.ipynb

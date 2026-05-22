@@ -4,7 +4,6 @@ Handles datetime parsing, outlier removal, and dataset merging.
 """
 
 import pandas as pd
-import numpy as np
 
 
 def _derive_trade_time(df):
@@ -86,6 +85,23 @@ def clean_trades(df):
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    if 'fee' in df.columns:
+        df['net_closed_pnl'] = df['closed_pnl'] - df['fee'].abs()
+    else:
+        df['net_closed_pnl'] = df['closed_pnl']
+
+    if 'size_usd' in df.columns:
+        df['abs_size_usd'] = df['size_usd'].abs()
+        non_zero_notional = df['abs_size_usd'].where(df['abs_size_usd'] != 0)
+        df['return_pct'] = (df['closed_pnl'] / non_zero_notional) * 100
+        df['return_bps'] = df['return_pct'] * 100
+        df['net_return_pct'] = (df['net_closed_pnl'] / non_zero_notional) * 100
+        df['net_return_bps'] = df['net_return_pct'] * 100
+        df['return_pct'] = pd.to_numeric(df['return_pct'], errors='coerce')
+        df['return_bps'] = pd.to_numeric(df['return_bps'], errors='coerce')
+        df['net_return_pct'] = pd.to_numeric(df['net_return_pct'], errors='coerce')
+        df['net_return_bps'] = pd.to_numeric(df['net_return_bps'], errors='coerce')
     
     print(f"\nBefore cleaning:")
     print(f"  Total rows: {rows_before}")
@@ -112,8 +128,12 @@ def clean_trades(df):
     print(f"  Removed {rows_before - rows_after} rows ({100*(rows_before-rows_after)/rows_before:.1f}%)")
     print(f"\n  PnL Stats (cleaned):")
     print(f"    Mean: ${df['closed_pnl'].mean():.2f}")
+    print(f"    Mean net PnL: ${df['net_closed_pnl'].mean():.2f}")
     print(f"    Median: ${df['closed_pnl'].median():.2f}")
     print(f"    Std: ${df['closed_pnl'].std():.2f}")
+    if 'return_bps' in df.columns:
+        print(f"    Mean return: {df['return_bps'].mean():.2f} bps")
+        print(f"    Mean net return: {df['net_return_bps'].mean():.2f} bps")
     print(f"    Null timestamps after parsing: {df['time'].isna().sum()}")
 
     return df.reset_index(drop=True)
