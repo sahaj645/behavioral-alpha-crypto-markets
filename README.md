@@ -1,220 +1,142 @@
-# Bitcoin Market Sentiment vs Hyperliquid Trader Performance
+# Behavioral Alpha in Crypto Markets
 
-**A production-grade quantitative analysis of Fear & Greed market psychology and real-world trader profitability.**
+Quant-style research project on how Bitcoin Fear & Greed regimes line up with
+realized Hyperliquid trader outcomes.
 
----
+This repo is built as a portfolio project for internship applications. It is
+not a live trading system and it does not claim deployable alpha from sentiment
+alone. The goal is to show a clean research workflow: data ingestion, feature
+engineering, regime analysis, out-of-sample evaluation, and reproducible
+artifacts.
 
-## Tech Stack
+## What the project does
 
-Python 3.11+ | Pandas 2.0+ | Seaborn 0.12+ | Plotly 5.15+ | Jupyter Lab | Scipy Statistics
+- Loads Hyperliquid trade history and Fear & Greed daily sentiment data.
+- Cleans and normalizes the raw data into a merged research dataset.
+- Measures PnL, win rate, side bias, trader behavior, symbol behavior, and lag
+  structure across sentiment regimes.
+- Builds fee-adjusted trade-return features in basis points.
+- Runs a regime-aware side-selection backtest with train/test and walk-forward
+  evaluation.
+- Exports figures plus processed tables to `data/processed/`.
 
----
+## Current dataset snapshot
 
-## Assignment Context
+- Cleaned trades: `162,283`
+- Coverage window: `2023-05-01` to `2025-05-01`
+- Sentiment merge coverage: `100%`
+- Mean gross trade return: `63.73 bps`
+- Mean net trade return after fees: `59.87 bps`
 
-This is a **data science hiring assignment for PrimeTrade.ai**, a Web3 trading firm. The project analyzes the relationship between Bitcoin market sentiment (Fear & Greed Index) and trader performance on Hyperliquid, a decentralized perpetual futures exchange.
+## Measured findings from the current dataset
 
-**Goal:** Identify patterns in behavioral finance and deliver trading strategies supported by quantitative evidence.
+- `Extreme Greed` had the highest average trade PnL at `$1.26` and the highest
+  win rate at `32.5%`.
+- `Fear` had higher average trade PnL than `Greed` (`$1.07` vs `$0.89`), but
+  not the highest win rate.
+- On normalized net returns, `Fear + Extreme Fear` averaged `36.99 bps` versus
+  `89.94 bps` for `Greed + Extreme Greed`.
+- The fear-vs-greed return difference is statistically strong in this sample
+  with Welch test `p ~= 6.66e-128`.
+- The lag analysis peaks at same-day correlation (`0.130`), which suggests the
+  relationship is mostly contemporaneous rather than strongly predictive.
+- In the current sample, momentum-style traders slightly outperform contrarian
+  traders on cumulative realized PnL (`+4.2%`).
 
----
+## Research layer
 
-## Key Findings
+The project now includes a backtest module that works on fee-adjusted realized
+trade returns (`net_return_bps`).
 
-- **Finding 1:** Traders show **[X]%** higher win rates during Fear sentiment zones, suggesting systematic mean-reversion opportunities in market dislocations.
-- **Finding 2:** Contrarian traders (profiting during fear) outperform momentum traders (profiting during greed) by **[X]%** in cumulative PnL.
-- **Finding 3:** Average leverage increases by **[X]%** during Extreme Greed, correlating with **[X]%** lower returns—indicating increased risk-taking during market euphoria.
-- **Finding 4:** [BTC/ETH] trades deliver **[X]%** superior returns during [sentiment zone], indicating sector-specific sentiment responsiveness.
-- **Finding 5:** Sentiment at lag T predicts PnL at T+1 with **[X]** correlation, providing a measurable predictive signal for entry timing.
+Implemented research checks:
 
----
+- Static train/test split by date.
+- Regime-to-side mapping learned on train data only.
+- Out-of-sample comparison against `always_long`, `always_short`, and
+  `all_trades` baselines.
+- Non-overlapping walk-forward evaluation.
+- Risk summary: daily mean return, volatility, Sharpe, win rate, cumulative
+  return, and max drawdown.
 
-## Methodology
+Important caveat:
 
-### 8 Core Analyses
+The backtest is a research proxy built from realized trader outcomes, not a
+market-executable strategy replay. Because the source data is already trader
+PnL, the performance metrics should be treated as exploratory diagnostics, not
+production trading claims.
 
-1. **PnL by Sentiment** — Mean, median, and total profitability across all 5 sentiment zones (Extreme Fear → Extreme Greed)
-2. **Win Rate by Sentiment** — % of profitable trades per sentiment, split by Long/Short side
-3. **Long vs Short by Sentiment** — Pivot table of mean PnL by sentiment × position side
-4. **Top Trader Profiles** — Identify top 10 traders by cumulative PnL; heatmap of performance across sentiment zones
-5. **Leverage Behavior** — Average leverage per sentiment; correlation with profitability; evidence of risk-taking patterns
-6. **Symbol Performance** — Which trading pairs (BTC, ETH, etc.) outperform in which sentiment regimes
-7. **Contrarian vs Momentum Traders** — Classification and profitability comparison of trading styles
-8. **Lag Effect Analysis** — Does today's sentiment predict tomorrow's PnL? Compute correlations at -3 to +3 day lags
+## Project structure
 
-### Technical Approach
-
-- **Data Cleaning:** Parse timestamps, normalize column names, remove outliers using IQR method (1.5 × IQR)
-- **Merging:** Left join trades to sentiment on date; handle missing sentiment labels gracefully
-- **Statistical Tests:** Compute correlation, t-tests, and Sharpe ratios; interpret causality carefully (correlation ≠ causation)
-- **Visualization:** 10 publication-quality charts using seaborn, matplotlib, and plotly; all saved to `data/figures/` at 150 DPI
-
----
-
-## Setup Instructions
-
-### 1. Clone Repository
-```bash
-git clone https://github.com/yourusername/primetrade-analysis.git
-cd primetrade-analysis
+```text
+behavioral-alpha-crypto-markets/
+|-- .github/workflows/ci.yml
+|-- analysis.ipynb
+|-- run_research.py
+|-- data/
+|   |-- figures/
+|   |-- processed/
+|   `-- raw/
+|-- src/
+|   |-- __init__.py
+|   |-- loader.py
+|   |-- cleaner.py
+|   |-- analysis.py
+|   |-- backtest.py
+|   `-- visualizer.py
+`-- tests/
+    `-- test_backtest.py
 ```
 
-### 2. Create Python Environment (Optional but Recommended)
-```bash
-python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-```
+## How to run
 
-### 3. Install Dependencies
+### 1. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Place Data Files
-Ensure you have:
-- `data/raw/historical_trades.csv` — Hyperliquid trade history
-- `data/raw/fear_greed.csv` — Fear & Greed Index daily readings
+### 2. Add raw data
 
-### 5. Run Analysis
+Place these files in `data/raw/`:
+
+- `historical_trades.csv`
+- `fear_greed.csv`
+
+### 3. Run the research pipeline
+
 ```bash
-jupyter notebook analysis.ipynb
+python run_research.py
 ```
 
-This notebook:
-- Loads and explores raw data
-- Cleans and merges datasets
-- Runs all 8 analyses with printed statistics
-- Generates all 10 visualizations
-- Synthesizes trading strategy recommendations
+This produces:
 
-### 6. Run Tests (Optional)
+- figures in `data/figures/`
+- summary tables in `data/processed/`
+- a compact JSON snapshot in `data/processed/research_summary.json`
+
+### 4. Run tests
+
 ```bash
-flake8 src/
+python -m unittest discover -s tests
 ```
 
----
+## Notebook
 
-## Project Structure
+`analysis.ipynb` remains the presentation notebook for exploratory review. The
+more production-like path is `run_research.py`, which gives a repeatable batch
+execution path for the same workflow.
 
-```
-primetrade-analysis/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                    # GitHub Actions CI/CD pipeline
-├── data/
-│   ├── raw/                          # Original CSV files
-│   │   ├── historical_trades.csv
-│   │   └── fear_greed.csv
-│   └── figures/                      # Generated charts
-│       ├── bar_pnl_by_sentiment.png
-│       ├── winrate_by_sentiment.png
-│       ├── long_short_heatmap.png
-│       ├── top_traders_heatmap.png
-│       ├── leverage_vs_sentiment.png
-│       ├── pnl_distribution_by_sentiment.png
-│       ├── trade_volume_by_sentiment.png
-│       ├── symbol_performance_heatmap.png
-│       ├── contrarian_vs_momentum.png
-│       └── lag_correlation_chart.png
-├── src/
-│   ├── __init__.py
-│   ├── loader.py                     # Data loading + validation
-│   ├── cleaner.py                    # Data cleaning + merging
-│   ├── analysis.py                   # 8 core analysis functions
-│   └── visualizer.py                 # 10 chart generation functions
-├── analysis.ipynb                    # Main Jupyter notebook
-├── requirements.txt                  # Python dependencies (pinned versions)
-├── README.md                         # This file
-└── .gitignore
-```
+## Production gaps
 
----
+This repo is much closer to a quant research project than it was initially, but
+it still has clear limits:
 
-## Visualizations
+- No market mid-price or order-book data.
+- No slippage model beyond fee adjustment.
+- No portfolio sizing or capital constraints.
+- No live execution layer or API integration.
+- No leverage analysis in the shipped dataset because the source CSV does not
+  contain a leverage field.
 
-All charts are saved to `data/figures/` at 150 DPI for publication quality.
-
-| # | Chart | Purpose |
-|---|-------|---------|
-| 1 | `bar_pnl_by_sentiment.png` | Average PnL per sentiment zone (color-coded red→green) |
-| 2 | `winrate_by_sentiment.png` | % of profitable trades per sentiment (sorted) |
-| 3 | `long_short_heatmap.png` | Mean PnL: Sentiment × Side (Long/Short) heatmap |
-| 4 | `top_traders_heatmap.png` | Top 10 traders × sentiment zones performance |
-| 5 | `leverage_vs_sentiment.png` | Leverage distribution per sentiment (boxplot) |
-| 6 | `pnl_distribution_by_sentiment.png` | Full PnL distribution per sentiment (violin plot) |
-| 7 | `trade_volume_by_sentiment.png` | Trade count distribution (pie + bar chart) |
-| 8 | `symbol_performance_heatmap.png` | Top 10 symbols × sentiment zones performance |
-| 9 | `contrarian_vs_momentum.png` | Trader type classification scatter plot |
-| 10 | `lag_correlation_chart.png` | Sentiment lag effect on PnL correlation |
-
----
-
-## CI/CD Pipeline
-
-GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
-- Installs Python 3.11 + dependencies
-- Runs flake8 linting on `src/` folder
-- Verifies `analysis.ipynb` exists and is valid JSON
-- Triggers on every push to main branch
-
----
-
-## Key Files Explained
-
-### `src/loader.py`
-- `load_trades(path)` — Load historical trades with validation; normalize column names
-- `load_sentiment(path)` — Load Fear & Greed Index with validation
-
-### `src/cleaner.py`
-- `clean_trades(df)` — Parse dates, cast dtypes, remove IQR outliers, print before/after stats
-- `clean_sentiment(df)` — Parse dates, create ordered categorical for sentiment hierarchy
-- `merge_datasets(trades, sentiment)` — Left join on date; report merge success rate
-
-### `src/analysis.py`
-- 8 functions implementing the core quantitative analyses
-- Each function computes statistics, prints results, returns structured DataFrames
-
-### `src/visualizer.py`
-- 10 functions generating publication-quality charts
-- Each function saves PNG to `data/figures/` at 150 DPI
-- Uses seaborn theme + consistent styling
-
-### `analysis.ipynb`
-- **Executive Summary** with 5 key findings
-- **Data Overview** — Explore raw datasets
-- **Data Cleaning & Merging** — Show before/after row counts
-- **8 Analysis Sections** — Code + charts + interpretation for each analysis
-- **Trading Strategy Recommendations** — 4 actionable strategies synthesizing findings
-
----
-
-## Next Steps for Production
-
-1. **Backtest Trading Strategies** — Use historical Hyperliquid order book data to validate strategy profitability offline
-2. **Live Paper Trading** — Deploy strategies on Hyperliquid testnet before real capital
-3. **Risk Management** — Add position sizing, correlation hedging, and drawdown controls
-4. **Feature Expansion** — Incorporate on-chain metrics, funding rates, and other market microstructure signals
-5. **Automation** — Wrap analysis in API; trigger automated strategy adjustments on sentiment regime changes
-
----
-
-## References & Reading
-
-- **Fear & Greed Index:** https://alternative.me/crypto/fear-and-greed-index/
-- **Hyperliquid Docs:** https://hyperliquid.gitbook.io/
-- **Behavioral Finance:** Kahneman & Tversky (1979), "Prospect Theory"
-- **Quantitative Trading:** Pardo (2008), "The Evaluation and Optimization of Trading Strategies"
-
----
-
-## Questions?
-
-For clarifications on methodology or findings, refer to the detailed interpretation sections in `analysis.ipynb`.
-
----
-
-**Version:** 1.0.0  
-**Status:** Production-ready for PrimeTrade.ai submission  
-**Last Updated:** 2026-04-16
+Those are deliberate boundaries, and they are better stated explicitly than
+hidden behind inflated claims.
