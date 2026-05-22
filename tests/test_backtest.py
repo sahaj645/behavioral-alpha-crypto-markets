@@ -33,7 +33,9 @@ class BacktestTests(unittest.TestCase):
                 ],
                 "side": ["Long", "Short", "Long", "Short", "Long", "Short", "Long", "Short"],
                 "closed_pnl": [10, 5, 8, 3, 4, 9, 2, 7],
+                "net_closed_pnl": [9.8, 4.8, 7.8, 2.8, 3.8, 8.8, 1.8, 6.8],
                 "return_bps": [20, 10, 18, 8, 5, 15, 4, 12],
+                "net_return_bps": [19, 9, 17, 7, 4, 14, 3, 11],
             }
         )
 

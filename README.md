@@ -108,6 +108,12 @@ Place these files in `data/raw/`:
 python run_research.py
 ```
 
+Optional batch flags:
+
+```bash
+python run_research.py --skip-plots --train-days 120 --test-days 20 --min-trades 150
+```
+
 This produces:
 
 - figures in `data/figures/`
